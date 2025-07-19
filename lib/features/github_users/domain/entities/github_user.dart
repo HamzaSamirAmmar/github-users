@@ -14,5 +14,5 @@ class GithubUser extends Equatable {
   });
 
   @override
-  List<Object?> get props => [id];
+  List<Object?> get props => [id, login, avatarUrl, htmlUrl];
 }

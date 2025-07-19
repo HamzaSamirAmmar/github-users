@@ -4,8 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'github_user_model.g.dart';
 
 @JsonSerializable()
-class GithubUserModel extends GithubUser{
-
+class GithubUserModel extends GithubUser {
   const GithubUserModel({
     required super.id,
     required super.login,
@@ -13,6 +12,8 @@ class GithubUserModel extends GithubUser{
     required super.htmlUrl,
   });
 
-  factory GithubUserModel.fromJson(Map<String, dynamic> json) => _$GithubUserModelFromJson(json);
+  factory GithubUserModel.fromJson(Map<String, dynamic> json) =>
+      _$GithubUserModelFromJson(json);
+      
   Map<String, dynamic> toJson() => _$GithubUserModelToJson(this);
-  }
+}

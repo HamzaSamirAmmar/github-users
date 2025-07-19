@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:github_users/core/constants/app_constants.dart';
 import 'package:injectable/injectable.dart';
 
 class DioService {
@@ -29,7 +30,7 @@ abstract class DioClient {
   @singleton
   DioService createDioClient() {
     final dio = Dio();
-    dio.options.baseUrl = 'https://api.github.com';
+    dio.options.baseUrl = AppConstants.baseUrl;
     dio.options.connectTimeout = const Duration(seconds: 10);
     dio.options.receiveTimeout = const Duration(seconds: 10);
     dio.options.headers = {
