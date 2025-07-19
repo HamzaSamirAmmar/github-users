@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:github_users/features/github_users/presentation/widgets/debounced_search_widget.dart';
+import 'package:github_users/features/github_users/presentation/widgets/github_users_search_bar.dart';
 
 class GithubUsersPage extends ConsumerWidget {
   const GithubUsersPage({super.key});
@@ -16,7 +16,7 @@ class GithubUsersPage extends ConsumerWidget {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         elevation: 2,
       ),
-      body: const DebouncedSearchWidget(),
+      body: const GithubUsersSearchBar(),
     );
   }
 }
