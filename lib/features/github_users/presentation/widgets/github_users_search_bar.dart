@@ -17,22 +17,19 @@ class _SearchBarState extends ConsumerState<GithubUsersSearchBar> {
   final TextEditingController _searchController = TextEditingController();
 
   @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
+  void dispose() => _searchController.dispose();
 
   Future<List<GithubUserWithScore>> _getSuggestions(String query) async {
     if (query.isEmpty) return [];
 
     await ref.read(githubUsersNotifierProvider.notifier).searchUsers(query);
-    final usersAsync = ref.read(githubUsersNotifierProvider);
-
-    return usersAsync.when(
-      data: (users) => users,
-      loading: () => <GithubUserWithScore>[],
-      error: (_, __) => <GithubUserWithScore>[],
-    );
+    return ref
+        .read(githubUsersNotifierProvider)
+        .when(
+          data: (users) => users,
+          loading: () => <GithubUserWithScore>[],
+          error: (_, __) => <GithubUserWithScore>[],
+        );
   }
 
   void _onSuggestionSelected(GithubUserWithScore user) {
@@ -40,14 +37,12 @@ class _SearchBarState extends ConsumerState<GithubUsersSearchBar> {
     print('Score: ${user.score}');
     print('Public repos: ${user.publicRepos}');
     print('Profile URL: ${user.htmlUrl}');
-
     _searchController.clear();
   }
 
   @override
   Widget build(BuildContext context) {
-    final usersAsync = ref.watch(githubUsersNotifierProvider);
-    final isLoading = usersAsync.isLoading;
+    final isLoading = ref.watch(githubUsersNotifierProvider).isLoading;
 
     return Column(
       children: [
@@ -55,31 +50,29 @@ class _SearchBarState extends ConsumerState<GithubUsersSearchBar> {
           padding: const EdgeInsets.all(16.0),
           child: TypeAheadField<GithubUserWithScore>(
             controller: _searchController,
-            builder: (context, controller, focusNode) {
-              return TextField(
-                controller: controller,
-                focusNode: focusNode,
-                decoration: InputDecoration(
-                  hintText: 'Search GitHub users...',
-                  prefixIcon: const Icon(Icons.search),
-                  suffixIcon: isLoading
-                      ? const Padding(
-                          padding: EdgeInsets.all(12.0),
-                          child: SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          ),
-                        )
-                      : null,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  filled: true,
-                  fillColor: Colors.grey[100],
+            builder: (context, controller, focusNode) => TextField(
+              controller: controller,
+              focusNode: focusNode,
+              decoration: InputDecoration(
+                hintText: 'Search GitHub users...',
+                prefixIcon: const Icon(Icons.search),
+                suffixIcon: isLoading
+                    ? const Padding(
+                        padding: EdgeInsets.all(12.0),
+                        child: SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      )
+                    : null,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
-              );
-            },
+                filled: true,
+                fillColor: Colors.grey[100],
+              ),
+            ),
             suggestionsCallback: _getSuggestions,
             itemBuilder: (context, user) => UserSuggestionItem(user: user),
             onSelected: _onSuggestionSelected,
