@@ -1,21 +1,62 @@
-import 'package:github_users/core/dio_client.dart';
+import 'package:github_users/core/constants/app_constants.dart';
+import 'package:github_users/core/data/base_remote_data_source.dart';
 import 'package:github_users/features/github_users/data/models/github_user_model.dart';
+import 'package:github_users/features/github_users/data/models/github_user_details_model.dart';
 import 'package:github_users/features/github_users/domain/entities/github_user.dart';
+import 'package:github_users/features/github_users/domain/entities/github_user_details.dart';
 import 'package:injectable/injectable.dart';
 
+abstract class IGithubRemoteDataSource {
+  Future<List<GithubUser>> getGithubUsers({String query = ''});
+  Future<List<GithubUserDetails>> getDetailedUsers(List<GithubUser> users);
+}
+
 @LazySingleton()
-class GithubRemoteDataSource {
-  final DioService dioService;
+class GithubRemoteDataSource extends BaseRemoteDataSourceImp
+    implements IGithubRemoteDataSource {
+  GithubRemoteDataSource(super.dioService);
 
-  GithubRemoteDataSource({required this.dioService});
+  @override
+  Future<List<GithubUser>> getGithubUsers({String query = ''}) async =>
+      await performGetListRequest<GithubUserModel>(
+        AppConstants.searchUsersEndpoint,
+        queryParameters: {
+          if (query.isNotEmpty) 'q': query,
+          'per_page': AppConstants.defaultPerPage,
+        },
+        fromJsonFactory: (json) => GithubUserModel.fromJson(json),
+      );
 
-  Future<List<GithubUser>> getGithubUsers() async {
+  /// Fetches detailed information for a list of users
+  @override
+  Future<List<GithubUserDetails>> getDetailedUsers(
+    List<GithubUser> users,
+  ) async {
     try {
-      final response = await dioService.get('/users');
-      final List<dynamic> data = response.data;
-      return data.map((e) => GithubUserModel.fromJson(e)).toList();
+      final List<GithubUserDetails> detailedUsers = [];
+
+      // Fetch detailed information for each user concurrently
+      final futures = users.map((user) => _fetchUserDetails(user.login));
+      final results = await Future.wait(futures);
+
+      // Filter out any failed requests and create detailed user models
+      for (int i = 0; i < results.length; i++) {
+        if (results[i] != null) {
+          detailedUsers.add(results[i]!);
+        }
+      }
+
+      return detailedUsers;
     } catch (e) {
-      throw Exception('Failed to fetch GitHub users: $e');
+      // If detailed fetching fails, return empty list
+      return [];
     }
   }
+
+  /// Fetches detailed information for a specific user
+  Future<GithubUserDetails?> _fetchUserDetails(String username) async =>
+      await performGetRequest<GithubUserDetailsModel>(
+        '${AppConstants.usersEndpoint}/$username',
+        fromJsonFactory: (json) => GithubUserDetailsModel.fromJson(json),
+      );
 }

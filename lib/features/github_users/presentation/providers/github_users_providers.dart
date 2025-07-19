@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:github_users/features/github_users/domain/entities/github_user.dart';
+import 'package:github_users/core/utls/user_sorting_service.dart';
+import 'package:github_users/features/github_users/domain/entities/github_user_with_score.dart';
 import 'package:github_users/features/github_users/domain/repositories/github_users_repository.dart';
 import 'package:github_users/locator.dart';
 
@@ -8,69 +9,67 @@ final githubUsersRepositoryProvider = Provider<GithubUsersRepository>((ref) {
   return locator<GithubUsersRepository>();
 });
 
-// State notifier for GitHub users
-class GithubUsersNotifier extends StateNotifier<AsyncValue<List<GithubUser>>> {
+// Search query provider
+final searchQueryProvider = StateProvider<String>((ref) => '');
+
+// State notifier for GitHub users search
+class GithubUsersNotifier
+    extends StateNotifier<AsyncValue<List<GithubUserWithScore>>> {
   final GithubUsersRepository _repository;
 
-  GithubUsersNotifier(this._repository) : super(const AsyncValue.loading());
+  GithubUsersNotifier(this._repository) : super(const AsyncValue.data([]));
 
-  Future<void> fetchGithubUsers() async {
+  Future<void> searchUsers(String query) async {
+    if (query.isEmpty) {
+      state = const AsyncValue.data([]);
+      return;
+    }
+
     state = const AsyncValue.loading();
 
-    final result = await _repository.getGithubUsers();
+    try {
+      // Get basic user information
+      final basicUsersResult = await _repository.getGithubUsers(query: query);
 
-    result.fold(
-      (failure) => state = AsyncValue.error(failure, StackTrace.current),
-      (users) => state = AsyncValue.data(users),
-    );
+      final basicUsers = basicUsersResult.fold(
+        (failure) => throw failure,
+        (users) => users,
+      );
+
+      // If we have basic users, fetch detailed information
+      if (basicUsers.isNotEmpty) {
+        final detailedUsersResult = await _repository.getDetailedUsers(
+          basicUsers,
+        );
+
+        final detailedUsers = detailedUsersResult.fold(
+          (failure) => throw failure,
+          (users) => users,
+        );
+
+        // Apply sorting logic (returns GithubUserWithScore)
+        final sortedUsers = UserSortingUtil.sortUsers(detailedUsers);
+
+        state = AsyncValue.data(sortedUsers);
+      } else {
+        state = const AsyncValue.data([]);
+      }
+    } catch (e) {
+      state = AsyncValue.error(e, StackTrace.current);
+    }
   }
 
-  void refresh() {
-    fetchGithubUsers();
+  void clearSearch() {
+    state = const AsyncValue.data([]);
   }
 }
 
 // Provider for the notifier
 final githubUsersNotifierProvider =
-    StateNotifierProvider<GithubUsersNotifier, AsyncValue<List<GithubUser>>>((
-      ref,
-    ) {
+    StateNotifierProvider<
+      GithubUsersNotifier,
+      AsyncValue<List<GithubUserWithScore>>
+    >((ref) {
       final repository = ref.watch(githubUsersRepositoryProvider);
       return GithubUsersNotifier(repository);
     });
-
-// Provider for filtered users (for search functionality)
-final filteredGithubUsersProvider = Provider<AsyncValue<List<GithubUser>>>((
-  ref,
-) {
-  final usersAsync = ref.watch(githubUsersNotifierProvider);
-  final searchQuery = ref.watch(searchQueryProvider);
-
-  return usersAsync.when(
-    data: (users) {
-      if (searchQuery.isEmpty) {
-        return AsyncValue.data(users);
-      }
-
-      final filteredUsers = users
-          .where(
-            (user) =>
-                user.login.toLowerCase().contains(searchQuery.toLowerCase()),
-          )
-          .toList();
-
-      return AsyncValue.data(filteredUsers);
-    },
-    loading: () => const AsyncValue.loading(),
-    error: (error, stackTrace) => AsyncValue.error(error, stackTrace),
-  );
-});
-
-// Search query provider
-final searchQueryProvider = StateProvider<String>((ref) => '');
-
-// Provider to trigger initial data fetch
-final githubUsersInitializerProvider = FutureProvider<void>((ref) async {
-  final notifier = ref.read(githubUsersNotifierProvider.notifier);
-  await notifier.fetchGithubUsers();
-});
