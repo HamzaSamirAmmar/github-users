@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:github_users/core/constants/app_constants.dart';
 import 'package:github_users/features/github_users/domain/entities/github_user_with_score.dart';
+import 'package:github_users/features/github_users/presentation/pages/user_details_page.dart';
 import 'package:github_users/features/github_users/presentation/providers/github_users_providers.dart';
-import 'package:github_users/features/github_users/presentation/widgets/user_suggestion_item.dart';
+import 'package:github_users/features/github_users/presentation/widgets/github_users_page/user_suggestion_item.dart';
 
 class GithubUsersSearchBar extends ConsumerStatefulWidget {
   const GithubUsersSearchBar({super.key});
@@ -15,9 +16,6 @@ class GithubUsersSearchBar extends ConsumerStatefulWidget {
 
 class _SearchBarState extends ConsumerState<GithubUsersSearchBar> {
   final TextEditingController _searchController = TextEditingController();
-
-  @override
-  void dispose() => _searchController.dispose();
 
   Future<List<GithubUserWithScore>> _getSuggestions(String query) async {
     if (query.isEmpty) return [];
@@ -33,11 +31,10 @@ class _SearchBarState extends ConsumerState<GithubUsersSearchBar> {
   }
 
   void _onSuggestionSelected(GithubUserWithScore user) {
-    print('Selected user: ${user.login}');
-    print('Score: ${user.score}');
-    print('Public repos: ${user.publicRepos}');
-    print('Profile URL: ${user.htmlUrl}');
     _searchController.clear();
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => UserDetailsPage(user: user)),
+    );
   }
 
   @override
