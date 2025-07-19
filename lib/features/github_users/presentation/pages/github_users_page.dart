@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:github_users/features/github_users/presentation/widgets/github_users_search_bar.dart';
+import 'package:github_users/features/github_users/presentation/widgets/github_users_page/github_users_search_bar.dart';
 
 class GithubUsersPage extends ConsumerWidget {
   const GithubUsersPage({super.key});
