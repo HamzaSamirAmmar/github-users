@@ -11,12 +11,19 @@ final githubUsersRepositoryProvider = Provider<GithubUsersRepository>(
 final searchQueryProvider = StateProvider<String>((ref) => '');
 
 class GithubUsersNotifier extends AsyncNotifier<List<GithubUserWithScore>> {
+  final Map<String, List<GithubUserWithScore>> _cache = {};
+
   @override
   Future<List<GithubUserWithScore>> build() async => [];
 
   Future<void> searchUsers(String query) async {
     if (query.isEmpty) {
       state = const AsyncValue.data([]);
+      return;
+    }
+
+    if (_cache.containsKey(query)) {
+      state = AsyncValue.data(_cache[query]!);
       return;
     }
 
@@ -31,6 +38,7 @@ class GithubUsersNotifier extends AsyncNotifier<List<GithubUserWithScore>> {
 
       if (basicUsers.isEmpty) {
         state = const AsyncValue.data([]);
+        _cache[query] = [];
         return;
       }
 
@@ -38,13 +46,15 @@ class GithubUsersNotifier extends AsyncNotifier<List<GithubUserWithScore>> {
         basicUsers,
       )).fold((failure) => throw failure, (users) => users);
 
-      state = AsyncValue.data(UserSortingUtil.sortUsers(detailedUsers));
+      final sortedUsers = UserSortingUtil.sortUsers(detailedUsers);
+
+      _cache[query] = sortedUsers;
+
+      state = AsyncValue.data(sortedUsers);
     } catch (e) {
       state = AsyncValue.error(e, StackTrace.current);
     }
   }
-
-  void clearSearch() => state = const AsyncValue.data([]);
 }
 
 final githubUsersNotifierProvider =
