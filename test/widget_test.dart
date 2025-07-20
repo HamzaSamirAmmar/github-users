@@ -16,6 +16,6 @@ void main() {
     await tester.pumpWidget(const ProviderScope(child: MyApp()));
 
     // Verify that the app title is displayed
-    expect(find.text('GitHub Users'), findsOneWidget);
+    expect(find.text('GitHub Users Search'), findsOneWidget);
   });
 }

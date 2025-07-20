@@ -11,7 +11,7 @@ class UserSortingUtil {
     score += user.publicRepos * AppConstants.repoPointsPerRepository;
 
     // Add bonus points for recent activity (commits in last 6 months)
-    if (user.updatedAt != null && _isRecentlyActive(user.updatedAt!)) {
+    if (user.updatedAt != null && isRecentlyActive(user.updatedAt!)) {
       score += AppConstants.commitBonusPoints;
     }
 
@@ -19,7 +19,7 @@ class UserSortingUtil {
   }
 
   /// Checks if a user has been active in the last 6 months
-  static bool _isRecentlyActive(DateTime updatedAt) {
+  static bool isRecentlyActive(DateTime updatedAt) {
     final monthsAgoSinceLastCommit = DateTime.now().subtract(
       Duration(days: AppConstants.monthsForRecentCommit * 30),
     );
@@ -49,9 +49,9 @@ class UserSortingUtil {
       // If both have same repo priority, check recent activity
       if (aHasManyRepos && bHasManyRepos) {
         final aIsRecent =
-            a.updatedAt != null && _isRecentlyActive(a.updatedAt!);
+            a.updatedAt != null && isRecentlyActive(a.updatedAt!);
         final bIsRecent =
-            b.updatedAt != null && _isRecentlyActive(b.updatedAt!);
+            b.updatedAt != null && isRecentlyActive(b.updatedAt!);
 
         if (aIsRecent && !bIsRecent) return -1;
         if (!aIsRecent && bIsRecent) return 1;

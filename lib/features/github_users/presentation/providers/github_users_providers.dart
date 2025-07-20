@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:github_users/core/utils/user_sorting_service.dart';
+import 'package:github_users/core/utils/user_sorting_util.dart';
 import 'package:github_users/features/github_users/domain/entities/github_user_with_score.dart';
 import 'package:github_users/features/github_users/domain/repositories/github_users_repository.dart';
 import 'package:github_users/locator.dart';
