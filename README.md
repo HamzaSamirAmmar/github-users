@@ -153,4 +153,4 @@ The application implements a multi-layered caching approach for optimal performa
 - **Android APK**: [Download APK](https://drive.google.com/file/d/1tuFJaZgL9PsFlLRSf90pNrPIqExA1vBT/view?usp=sharing)
 
 ### Web Application
-- **Live Demo**: [https://github-users-app.web.app](https://loquacious-griffin-3fa7c4.netlify.app/p)
+- **Live Demo**: [PWA Link](https://loquacious-griffin-3fa7c4.netlify.app)
