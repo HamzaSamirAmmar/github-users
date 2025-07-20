@@ -11,11 +11,11 @@ class AppConstants {
   static const String searchUsersEndpoint = '/search/users';
 
   // API Parameters
-  static const int defaultPerPage = 5;
+  static const int defaultPerPage = 10;
   static const int maxPerPage = 100;
 
   // Debounce and Search Constants
-  static const Duration searchDebounceDuration = Duration(milliseconds: 500);
+  static const Duration searchDebounceDuration = Duration(milliseconds: 800);
   static const int minSearchLength = 2;
 
   // UI Constants
