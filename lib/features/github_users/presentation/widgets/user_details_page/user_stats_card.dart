@@ -16,28 +16,21 @@ class UserStatsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.1),
-            spreadRadius: 1,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          _buildIconContainer(),
-          const SizedBox(height: 12),
-          _buildValueText(),
-          const SizedBox(height: 4),
-          _buildTitleText(),
-        ],
+    return Card(
+      elevation: 1,
+      shadowColor: Theme.of(context).colorScheme.outline.withValues(alpha: 0.1),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            _buildIconContainer(),
+            const SizedBox(height: 12),
+            _buildValueText(),
+            const SizedBox(height: 4),
+            _buildTitleText(context),
+          ],
+        ),
       ),
     );
   }
@@ -60,12 +53,12 @@ class UserStatsCard extends StatelessWidget {
     );
   }
 
-  Widget _buildTitleText() {
+  Widget _buildTitleText(BuildContext context) {
     return Text(
       title,
       style: TextStyle(
         fontSize: 12,
-        color: Colors.grey[600],
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
         fontWeight: FontWeight.w500,
       ),
       textAlign: TextAlign.center,

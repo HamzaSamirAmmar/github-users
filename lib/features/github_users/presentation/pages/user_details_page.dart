@@ -13,37 +13,62 @@ class UserDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
-      appBar: _buildAppBar(),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            UserProfileHeader(user: user),
-            const SizedBox(height: 24),
-            UserStatsSection(user: user),
-            const SizedBox(height: 24),
-            GithubProfileButton(user: user),
-            const SizedBox(height: 24),
-            UserLastUpdatedCard(user: user),
-            const SizedBox(height: 24),
-          ],
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      appBar: _buildAppBar(context),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Theme.of(context).colorScheme.surface,
+              Theme.of(context).colorScheme.surface,
+            ],
+          ),
+        ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              UserProfileHeader(user: user),
+              const SizedBox(height: 24),
+              UserStatsSection(user: user),
+              const SizedBox(height: 24),
+              GithubProfileButton(user: user),
+              const SizedBox(height: 24),
+              UserLastUpdatedCard(user: user),
+              const SizedBox(height: 24),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
-      title: Text(
-        user.login,
-        style: const TextStyle(fontWeight: FontWeight.bold),
+      title: Row(
+        children: [
+          CircleAvatar(
+            radius: 16,
+            backgroundImage: NetworkImage(user.avatarUrl),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              user.login,
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       elevation: 0,
-      iconTheme: const IconThemeData(color: Colors.black87),
-      titleTextStyle: const TextStyle(
-        color: Colors.black87,
-        fontSize: 20,
+      iconTheme: IconThemeData(color: Theme.of(context).colorScheme.onSurface),
+      titleTextStyle: TextStyle(
+        color: Theme.of(context).colorScheme.onSurface,
+        fontSize: 18,
         fontWeight: FontWeight.w600,
       ),
     );

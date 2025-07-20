@@ -10,56 +10,45 @@ class UserLastUpdatedCard extends StatelessWidget {
   Widget build(BuildContext context) {
     if (user.updatedAt == null) return const SizedBox.shrink();
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-      child: Container(
-        width: double.infinity,
+    return Card(
+      elevation: 1,
+      shadowColor: Theme.of(context).colorScheme.outline.withValues(alpha: 0.1),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
         padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-                      BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.1),
-            spreadRadius: 1,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-          ],
-        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildHeader(),
+            _buildHeader(context),
             const SizedBox(height: 8),
-            _buildDateText(),
+            _buildDateText(context),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
     return Row(
       children: [
-        Icon(Icons.update, color: Colors.grey[600], size: 20),
+        Icon(Icons.update, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 20),
         const SizedBox(width: 8),
         Text(
           'Last Updated',
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
-            color: Colors.grey[800],
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildDateText() {
+  Widget _buildDateText(BuildContext context) {
     return Text(
       _formatDate(user.updatedAt!),
-      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+      style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurfaceVariant),
     );
   }
 
