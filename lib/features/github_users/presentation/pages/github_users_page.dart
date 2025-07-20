@@ -9,14 +9,32 @@ class GithubUsersPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'GitHub Users Search',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Row(
+          children: [
+            Image.asset('assets/pngs/logo.png', height: 32, width: 32),
+            const SizedBox(width: 12),
+            const Text(
+              'GitHub Users',
+              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+            ),
+          ],
         ),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        elevation: 2,
+        centerTitle: false,
+        elevation: 0,
       ),
-      body: const GithubUsersSearchBar(),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Theme.of(context).colorScheme.primary,
+              Theme.of(context).colorScheme.surface,
+            ],
+          ),
+        ),
+        child: const GithubUsersSearchBar(),
+      ),
     );
   }
 }

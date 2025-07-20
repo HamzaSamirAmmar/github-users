@@ -9,32 +9,29 @@ class UserStatsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-      child: Row(
-        children: [
-          // Public Repos Card
-          Expanded(
-            child: UserStatsCard(
-              icon: Icons.folder,
-              title: 'Public Repos',
-              value: user.publicRepos.toString(),
-              color: Colors.blue,
-            ),
+    return Row(
+      children: [
+        // Public Repos Card
+        Expanded(
+          child: UserStatsCard(
+            icon: Icons.folder,
+            title: 'Public Repos',
+            value: user.publicRepos.toString(),
+            color: Theme.of(context).colorScheme.secondary,
           ),
-          const SizedBox(width: 16),
+        ),
+        const SizedBox(width: 16),
 
-          // Score Card
-          Expanded(
-            child: UserStatsCard(
-              icon: Icons.star,
-              title: 'Search Score',
-              value: user.score.toString(),
-              color: Colors.orange,
-            ),
+        // Score Card
+        Expanded(
+          child: UserStatsCard(
+            icon: Icons.star,
+            title: 'Search Score',
+            value: user.score.toString(),
+            color: Theme.of(context).colorScheme.tertiary,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

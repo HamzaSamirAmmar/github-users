@@ -15,7 +15,9 @@ class UserSuggestionItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: isSelected ? Colors.blue.withOpacity(0.1) : Colors.transparent,
+        color: isSelected
+            ? Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1)
+            : Colors.transparent,
         borderRadius: BorderRadius.circular(8),
       ),
       child: ListTile(
@@ -31,7 +33,7 @@ class UserSuggestionItem extends StatelessWidget {
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 16,
-            color: isSelected ? Colors.blue[800] : null,
+            color: isSelected ? Theme.of(context).colorScheme.secondary : null,
           ),
         ),
         subtitle: Row(
@@ -41,13 +43,15 @@ class UserSuggestionItem extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: Colors.blue[100],
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.secondary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   'Score: ${user.score}',
                   style: TextStyle(
-                    color: Colors.blue[800],
+                    color: Theme.of(context).colorScheme.secondary,
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),
@@ -61,13 +65,15 @@ class UserSuggestionItem extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: Colors.green[100],
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.tertiary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   '50+ repos',
                   style: TextStyle(
-                    color: Colors.green[800],
+                    color: Theme.of(context).colorScheme.tertiary,
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),
@@ -80,7 +86,12 @@ class UserSuggestionItem extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
           side: isSelected
-              ? BorderSide(color: Colors.blue.withOpacity(0.3), width: 1)
+              ? BorderSide(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.secondary.withValues(alpha: 0.3),
+                  width: 1,
+                )
               : BorderSide.none,
         ),
       ),
