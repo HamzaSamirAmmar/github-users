@@ -11,6 +11,11 @@ final githubUsersRepositoryProvider = Provider<GithubUsersRepository>(
 final searchQueryProvider = StateProvider<String>((ref) => '');
 
 class GithubUsersNotifier extends AsyncNotifier<List<GithubUserWithScore>> {
+  // Note: Caching is currently implemented within the provider for simplicity.
+  // Ideally, the repository should be the single source of truth and handle caching,
+  // as providers are UI-bound and their state may be lost when the widget tree changes.
+  // For improved efficiency and persistence, consider moving the cache to the repository layer.
+  // This approach could be optimized in the future.
   final Map<String, List<GithubUserWithScore>> _cache = {};
 
   @override
